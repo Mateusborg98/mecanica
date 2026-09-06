@@ -92,6 +92,26 @@ Alguns gráficos ficam vazios até que tráfego e transições de status sejam
 gerados. Para a evidência, crie e percorra uma ordem fictícia por todos os
 status e aguarde alguns minutos para a ingestão.
 
+## Evidência automatizada de 6 de setembro de 2026
+
+Foi executado em homologação um fluxo real usando o API Gateway, a Lambda, o
+RDS e a API no EKS. O token não foi impresso nem salvo.
+
+| Verificação | Resultado |
+|---|---|
+| Autenticação | `Bearer`, expiração de 900 segundos |
+| Ordem fictícia | `beb500f3-c5aa-4c1e-9ae3-e6c7823575a3` |
+| Correlação | `evidencia-ciclo-completo-20260906` |
+| Estados | `RECEBIDA` até `ENTREGUE` |
+| Diagnóstico | aproximadamente 2,52 segundos |
+| Execução | aproximadamente 2,49 segundos |
+| Finalização | aproximadamente 2,50 segundos |
+| Logs | JSON correlacionado em todas as transições |
+| HPA | métricas de CPU e memória disponíveis |
+
+Esses identificadores pertencem apenas à massa fictícia de homologação e podem
+ser usados para localizar as evidências no Datadog.
+
 ## 6. Testes e documentação
 
 - [ ] `mecanica-api`: `./mvnw clean verify` verde, 100 testes e JaCoCo aprovado.
