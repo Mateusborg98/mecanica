@@ -5,6 +5,14 @@ on:
     branches:
       - homolog
       - main
+    paths:
+      - "src/**"
+      - "k8s/**"
+      - "pom.xml"
+      - "Dockerfile"
+      - ".mvn/**"
+      - "mvnw"
+      - "mvnw.cmd"
   workflow_dispatch:
 
 permissions:
