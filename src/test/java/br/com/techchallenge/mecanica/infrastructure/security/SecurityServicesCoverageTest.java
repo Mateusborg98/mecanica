@@ -72,13 +72,14 @@ class SecurityServicesCoverageTest {
     }
 
     @Test
-    void authenticatedUserShouldReturnNullOrNumericSubject() {
+    void authenticatedUserShouldReturnNullOrUuidSubject() {
         UsuarioAutenticadoService service = new UsuarioAutenticadoService();
-        assertNull(service.getMatricula());
+        assertNull(service.getClienteId());
 
+        UUID clientId = UUID.randomUUID();
         SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken("321", null));
-        assertEquals(321, service.getMatricula());
+                new UsernamePasswordAuthenticationToken(clientId.toString(), null));
+        assertEquals(clientId, service.getClienteId());
     }
 
     @Test

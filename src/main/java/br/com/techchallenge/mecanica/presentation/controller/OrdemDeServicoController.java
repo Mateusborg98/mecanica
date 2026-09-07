@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.techchallenge.mecanica.application.dto.ordemdeservico.AdicionarItensOrdemDeServicoInput;
 import br.com.techchallenge.mecanica.application.dto.ordemdeservico.CriarOrdemDeServicoInput;
-import br.com.techchallenge.mecanica.application.usecase.cliente.BuscarClientePorCpfCnpjUseCase;
 import br.com.techchallenge.mecanica.application.usecase.operador.BuscarOperadorPorMatriculaUseCase;
 import br.com.techchallenge.mecanica.application.usecase.ordemdeservico.AprovarOrcamentoUseCase;
 import br.com.techchallenge.mecanica.application.usecase.ordemdeservico.AguardarAprovacaoUseCase;
@@ -31,6 +30,7 @@ import br.com.techchallenge.mecanica.application.usecase.ordemdeservico.NegarOrc
 import br.com.techchallenge.mecanica.application.usecase.veiculo.BuscarVeiculoPorPlacaUseCase;
 import br.com.techchallenge.mecanica.domain.operador.Operador;
 import br.com.techchallenge.mecanica.domain.veiculo.Veiculo;
+import br.com.techchallenge.mecanica.infrastructure.security.UsuarioAutenticadoService;
 import br.com.techchallenge.mecanica.presentation.dto.ordemDeServico.AddServicoPecaOrdemDeServicoDto;
 import br.com.techchallenge.mecanica.presentation.dto.ordemDeServico.AcompanhamentoOrdemResponse;
 import br.com.techchallenge.mecanica.presentation.dto.ordemDeServico.CriarOrdemDeServicoRequest;
@@ -49,7 +49,7 @@ import lombok.RequiredArgsConstructor;
 public class OrdemDeServicoController {
 
     private final CriarOrdemDeServicoUseCase criarOrdemDeServicoUseCase;
-    private final BuscarClientePorCpfCnpjUseCase buscarClientePorCpfCnpjUseCase;
+    private final UsuarioAutenticadoService usuarioAutenticadoService;
     private final BuscarVeiculoPorPlacaUseCase buscarVeiculoPorPlacaUseCase;
     private final BuscarOperadorPorMatriculaUseCase buscarOperadorPorMatriculaUseCase;
     private final BuscarOrdemDeServicoPorIdUseCase buscarOrdemDeServicoPorIdUseCase;
@@ -70,7 +70,7 @@ public class OrdemDeServicoController {
     public OrdemDeServicoResponse criar(
             @RequestBody @Valid CriarOrdemDeServicoRequest request) {
 
-        UUID clienteId = buscarClientePorCpfCnpjUseCase.executar(request.cpfCnpj()).getId();
+        UUID clienteId = usuarioAutenticadoService.getClienteId();
         Veiculo veiculo = buscarVeiculoPorPlacaUseCase.executar(request.placa());
         Operador operador = buscarOperadorPorMatriculaUseCase.executar(
                 request.matriculaOperador());

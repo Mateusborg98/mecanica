@@ -34,6 +34,28 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Validate deployment configuration
+        shell: bash
+        env:
+          EKS_CLUSTER_NAME: ${{ vars.EKS_CLUSTER_NAME }}
+          DATABASE_INSTANCE_ID: ${{ vars.DATABASE_INSTANCE_ID }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
+          JWT_ISSUER: ${{ vars.JWT_ISSUER }}
+        run: |
+          missing=()
+          for name in EKS_CLUSTER_NAME DATABASE_INSTANCE_ID DATABASE_URL DATABASE_USERNAME DATABASE_PASSWORD JWT_PUBLIC_KEY JWT_ISSUER; do
+            if [ -z "${!name}" ]; then
+              missing+=("$name")
+            fi
+          done
+          if [ "${#missing[@]}" -gt 0 ]; then
+            printf 'Configuração obrigatória ausente: %s\n' "${missing[*]}"
+            exit 1
+          fi
+
       - name: Log in to Amazon ECR
         id: ecr-login
         uses: aws-actions/amazon-ecr-login@v2

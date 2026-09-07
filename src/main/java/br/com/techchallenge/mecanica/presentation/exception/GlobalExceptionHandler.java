@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -31,6 +33,8 @@ import lombok.RequiredArgsConstructor;
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     private final OrdemDeServicoMetrics metrics;
 
@@ -76,6 +80,11 @@ public class GlobalExceptionHandler {
             HttpStatus status, String mensagem, HttpServletRequest request, Map<String, String> campos) {
         if (request.getRequestURI().startsWith("/ordens-servico")) {
             metrics.registrarFalha(request.getRequestURI(), status.value());
+            LOGGER.error(
+                    "Falha no processamento da ordem | path={} | status={} | category={}",
+                    request.getRequestURI(),
+                    status.value(),
+                    "HTTP_" + status.value());
         }
         return ResponseEntity.status(status).body(new ErroResponse(
                 OffsetDateTime.now(),
@@ -85,4 +94,5 @@ public class GlobalExceptionHandler {
                 request.getRequestURI(),
                 campos));
     }
+
 }
